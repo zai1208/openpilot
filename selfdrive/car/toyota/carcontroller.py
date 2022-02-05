@@ -22,11 +22,12 @@ class CarController():
     self.gas = 0
     self.accel = 0
 
-  def update(self, enabled, active, CS, frame, actuators, pcm_cancel_cmd, hud_alert,
-             left_line, right_line, lead, left_lane_depart, right_lane_depart):
+  def update(self, CC, CS, frame):
+    pcm_cancel_cmd = CC.cruiseControl.cancel
+    lead = CC.hudControl.leadVisible
 
     # gas and brake
-    if CS.CP.enableGasInterceptor and active:
+    if CS.CP.enableGasInterceptor and CC.active:
       MAX_INTERCEPTOR_GAS = 0.5
       # RAV4 has very sensitive gas pedal
       if CS.CP.carFingerprint in (CAR.RAV4, CAR.RAV4H, CAR.HIGHLANDER, CAR.HIGHLANDERH):
@@ -37,19 +38,19 @@ class CarController():
         PEDAL_SCALE = interp(CS.out.vEgo, [0.0, MIN_ACC_SPEED, MIN_ACC_SPEED + PEDAL_TRANSITION], [0.4, 0.5, 0.0])
       # offset for creep and windbrake
       pedal_offset = interp(CS.out.vEgo, [0.0, 2.3, MIN_ACC_SPEED + PEDAL_TRANSITION], [-.4, 0.0, 0.2])
-      pedal_command = PEDAL_SCALE * (actuators.accel + pedal_offset)
+      pedal_command = PEDAL_SCALE * (CC.actuators.accel + pedal_offset)
       interceptor_gas_cmd = clip(pedal_command, 0., MAX_INTERCEPTOR_GAS)
     else:
       interceptor_gas_cmd = 0.
-    pcm_accel_cmd = clip(actuators.accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+    pcm_accel_cmd = clip(CC.actuators.accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
     # steer torque
-    new_steer = int(round(actuators.steer * CarControllerParams.STEER_MAX))
+    new_steer = int(round(CC.actuators.steer * CarControllerParams.STEER_MAX))
     apply_steer = apply_toyota_steer_torque_limits(new_steer, self.last_steer, CS.out.steeringTorqueEps, CarControllerParams)
     self.steer_rate_limited = new_steer != apply_steer
 
     # Cut steering while we're in a known fault state (2s)
-    if not active or CS.steer_state in (9, 25):
+    if not CC.active or CS.steer_state in (9, 25):
       apply_steer = 0
       apply_steer_req = 0
     else:
@@ -57,7 +58,7 @@ class CarController():
 
     # TODO: probably can delete this. CS.pcm_acc_status uses a different signal
     # than CS.cruiseState.enabled. confirm they're not meaningfully different
-    if not enabled and CS.pcm_acc_status:
+    if not CC.enabled and CS.pcm_acc_status:
       pcm_cancel_cmd = 1
 
     # on entering standstill, send standstill request
@@ -72,8 +73,8 @@ class CarController():
 
     can_sends = []
 
-    #*** control msgs ***
-    #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
+    # *** control msgs ***
+    # print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
 
     # toyota can trace shows this message at 42Hz, with counter adding alternatively 1 and 2;
     # sending it at 100Hz seem to allow a higher rate limit, as the rate limit seems imposed
@@ -85,7 +86,7 @@ class CarController():
     # LTA mode. Set ret.steerControlType = car.CarParams.SteerControlType.angle and whitelist 0x191 in the panda
     # if frame % 2 == 0:
     #   can_sends.append(create_steer_command(self.packer, 0, 0, frame // 2))
-    #   can_sends.append(create_lta_steer_command(self.packer, actuators.steeringAngleDeg, apply_steer_req, frame // 2))
+    #   can_sends.append(create_lta_steer_command(self.packer, CC.actuators.steeringAngleDeg, apply_steer_req, frame // 2))
 
     # we can spam can to cancel the system even if we are using lat only control
     if (frame % 3 == 0 and CS.CP.openpilotLongitudinalControl) or pcm_cancel_cmd:
@@ -109,8 +110,8 @@ class CarController():
     # ui mesg is at 1Hz but we send asap if:
     # - there is something to display
     # - there is something to stop displaying
-    fcw_alert = hud_alert == VisualAlert.fcw
-    steer_alert = hud_alert in (VisualAlert.steerRequired, VisualAlert.ldw)
+    fcw_alert = CC.hudControl.visualAlert == VisualAlert.fcw
+    steer_alert = CC.hudControl.visualAlert in (VisualAlert.steerRequired, VisualAlert.ldw)
 
     send_ui = False
     if ((fcw_alert or steer_alert) and not self.alert_active) or \
@@ -121,8 +122,10 @@ class CarController():
       # forcing the pcm to disengage causes a bad fault sound so play a good sound instead
       send_ui = True
 
-    if (frame % 100 == 0 or send_ui):
-      can_sends.append(create_ui_command(self.packer, steer_alert, pcm_cancel_cmd, left_line, right_line, left_lane_depart, right_lane_depart, enabled))
+    if frame % 100 == 0 or send_ui:
+      can_sends.append(create_ui_command(self.packer, steer_alert, pcm_cancel_cmd,
+                                         CC.hudControl.leftLaneVisible, CC.hudControl.rightLaneVisible,
+                                         CC.hudControl.leftLaneDepart, CC.hudControl.RightLaneDepart, CC.enabled))
 
     if frame % 100 == 0 and CS.CP.enableDsu:
       can_sends.append(create_fcw_command(self.packer, fcw_alert))
@@ -132,7 +135,7 @@ class CarController():
       if frame % fr_step == 0 and CS.CP.enableDsu and CS.CP.carFingerprint in cars:
         can_sends.append(make_can_msg(addr, vl, bus))
 
-    new_actuators = actuators.copy()
+    new_actuators = CC.actuators.copy()
     new_actuators.steer = apply_steer / CarControllerParams.STEER_MAX
     new_actuators.accel = self.accel
     new_actuators.gas = self.gas
