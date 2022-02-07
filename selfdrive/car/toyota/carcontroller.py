@@ -23,9 +23,6 @@ class CarController():
     self.accel = 0
 
   def update(self, CC, CS, frame):
-    pcm_cancel_cmd = CC.cruiseControl.cancel
-    lead = CC.hudControl.leadVisible
-
     # gas and brake
     if CS.CP.enableGasInterceptor and CC.active:
       MAX_INTERCEPTOR_GAS = 0.5
@@ -58,6 +55,7 @@ class CarController():
 
     # TODO: probably can delete this. CS.pcm_acc_status uses a different signal
     # than CS.cruiseState.enabled. confirm they're not meaningfully different
+    pcm_cancel_cmd = CC.cruiseControl.cancel
     if not CC.enabled and CS.pcm_acc_status:
       pcm_cancel_cmd = 1
 
@@ -90,7 +88,8 @@ class CarController():
 
     # we can spam can to cancel the system even if we are using lat only control
     if (frame % 3 == 0 and CS.CP.openpilotLongitudinalControl) or pcm_cancel_cmd:
-      lead = lead or CS.out.vEgo < 12.    # at low speed we always assume the lead is present so ACC can be engaged
+      # at low speed we always assume the lead is present so ACC can be engaged
+      lead = CC.hudControl.leadVisible or CS.out.vEgo < 12.
 
       # Lexus IS uses a different cancellation message
       if pcm_cancel_cmd and CS.CP.carFingerprint in (CAR.LEXUS_IS, CAR.LEXUS_RC):
