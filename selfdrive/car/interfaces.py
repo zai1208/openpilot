@@ -72,7 +72,7 @@ class CarInterfaceBase(ABC):
   def get_std_params(candidate, fingerprint):
     ret = car.CarParams.new_message()
     ret.carFingerprint = candidate
-    ret.unsafeMode = 0  # see panda/board/safety_declarations.h for allowed values
+    ret.unsafeMode = 1  # see panda/board/safety_declarations.h for allowed values
 
     # standard ALC params
     ret.steerControlType = car.CarParams.SteerControlType.torque
@@ -127,8 +127,8 @@ class CarInterfaceBase(ABC):
       events.add(EventName.wrongCarMode)
     if cs_out.espDisabled:
       events.add(EventName.espDisabled)
-    if cs_out.gasPressed:
-      events.add(EventName.gasPressed)
+    # if cs_out.gasPressed:
+    #   events.add(EventName.gasPressed)
     if cs_out.stockFcw:
       events.add(EventName.stockFcw)
     if cs_out.stockAeb:
@@ -156,8 +156,7 @@ class CarInterfaceBase(ABC):
       events.add(EventName.steerUnavailable)
 
     # Disable on rising edge of gas or brake. Also disable on brake when speed > 0.
-    if (cs_out.gasPressed and not self.CS.out.gasPressed) or \
-       (cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill)):
+    if cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill):
       events.add(EventName.pedalPressed)
 
     # we engage when pcm is active (rising edge)
