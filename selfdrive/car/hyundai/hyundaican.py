@@ -3,6 +3,7 @@ from selfdrive.car.hyundai.values import CAR, CHECKSUM
 
 hyundai_checksum = crcmod.mkCrcFun(0x11D, initCrc=0xFD, rev=False, xorOut=0xdf)
 
+
 def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
                   lkas11, sys_warning, sys_state, enabled,
                   left_lane, right_lane,
@@ -78,6 +79,7 @@ def create_lfahda_mfc(packer, enabled, hda_set_speed=0):
   }
   return packer.make_can_msg("LFAHDA_MFC", 0, values)
 
+
 def create_acc_commands(packer, enabled, accel, jerk, idx, lead_visible, set_speed, stopping, gas_pressed):
   commands = []
 
@@ -107,12 +109,12 @@ def create_acc_commands(packer, enabled, accel, jerk, idx, lead_visible, set_spe
   commands.append(packer.make_can_msg("SCC12", 0, scc12_values))
 
   scc14_values = {
-    "ComfortBandUpper": 0.0, # stock usually is 0 but sometimes uses higher values
-    "ComfortBandLower": 0.0, # stock usually is 0 but sometimes uses higher values
-    "JerkUpperLimit": max(jerk, 1.0) if (enabled and not stopping) else 0, # stock usually is 1.0 but sometimes uses higher values
-    "JerkLowerLimit": max(-jerk, 1.0) if enabled else 0, # stock usually is 0.5 but sometimes uses higher values
-    "ACCMode": 1 if enabled else 4, # stock will always be 4 instead of 0 after first disengage
-    "ObjGap": 2 if lead_visible else 0, # 5: >30, m, 4: 25-30 m, 3: 20-25 m, 2: < 20 m, 0: no lead
+    "ComfortBandUpper": 0.0,  # stock usually is 0 but sometimes uses higher values
+    "ComfortBandLower": 0.0,  # stock usually is 0 but sometimes uses higher values
+    "JerkUpperLimit": max(jerk, 1.0) if (enabled and not stopping) else 0,  # stock usually is 1.0 but sometimes uses higher values
+    "JerkLowerLimit": max(-jerk, 1.0) if enabled else 0,  # stock usually is 0.5 but sometimes uses higher values
+    "ACCMode": 1 if enabled else 4,  # stock will always be 4 instead of 0 after first disengage
+    "ObjGap": 2 if lead_visible else 0,  # 5: >30, m, 4: 25-30 m, 3: 20-25 m, 2: < 20 m, 0: no lead
   }
   commands.append(packer.make_can_msg("SCC14", 0, scc14_values))
 
@@ -124,13 +126,14 @@ def create_acc_commands(packer, enabled, accel, jerk, idx, lead_visible, set_spe
     "Supplemental_Counter": idx % 0xF,
     "PAINT1_Status": 1,
     "FCA_DrvSetStatus": 1,
-    "FCA_Status": 1, # AEB disabled
+    "FCA_Status": 1,  # AEB disabled
   }
   fca11_dat = packer.make_can_msg("FCA11", 0, fca11_values)[2]
   fca11_values["CR_FCA_ChkSum"] = 0x10 - sum(sum(divmod(i, 16)) for i in fca11_dat) % 0x10
   commands.append(packer.make_can_msg("FCA11", 0, fca11_values))
 
   return commands
+
 
 def create_acc_opt(packer):
   commands = []
@@ -144,11 +147,12 @@ def create_acc_opt(packer):
 
   fca12_values = {
     "FCA_DrvSetState": 2,
-    "FCA_USM": 1, # AEB disabled
+    "FCA_USM": 1,  # AEB disabled
   }
   commands.append(packer.make_can_msg("FCA12", 0, fca12_values))
 
   return commands
+
 
 def create_frt_radar_opt(packer):
   frt_radar11_values = {
