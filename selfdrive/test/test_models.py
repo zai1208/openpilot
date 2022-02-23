@@ -72,8 +72,11 @@ class TestCarModel(unittest.TestCase):
 
       can_msgs = []
       fingerprint = {i: dict() for i in range(3)}
-      for msg in lr:
-        if msg.which() == "can":
+
+      all_msgs = sorted(lr, key=lambda msg: msg.logMonoTime)
+      t_start = all_msgs[0].logMonoTime
+      for msg in all_msgs:
+        if msg.which() == "can" and (msg.logMonoTime - t_start) * 1e-9 < 0.1:
           for m in msg.can:
             if m.src < 64:
               fingerprint[m.src][m.address] = len(m.dat)
