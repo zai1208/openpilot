@@ -78,10 +78,11 @@ class TestCarModel(unittest.TestCase):
       all_msgs = sorted(lr, key=lambda msg: msg.logMonoTime)
       t_start = all_msgs[0].logMonoTime
       for msg in all_msgs:
-        if msg.which() == "can" and (msg.logMonoTime - t_start) / 1e9 < MIN_FINGERPRINT_TIME:
-          for m in msg.can:
-            if m.src < 64:
-              fingerprint[m.src][m.address] = len(m.dat)
+        if msg.which() == "can":
+          if (msg.logMonoTime - t_start) / 1e9 < MIN_FINGERPRINT_TIME:
+            for m in msg.can:
+              if m.src < 64:
+                fingerprint[m.src][m.address] = len(m.dat)
           can_msgs.append(msg)
         elif msg.which() == "carParams":
           if msg.carParams.openpilotLongitudinalControl:
