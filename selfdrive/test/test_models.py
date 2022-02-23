@@ -29,6 +29,8 @@ PandaType = log.PandaState.PandaType
 NUM_JOBS = int(os.environ.get("NUM_JOBS", "1"))
 JOB_ID = int(os.environ.get("JOB_ID", "0"))
 
+MIN_FINGERPRINT_TIME = 0.1
+
 # TODO: get updated routes for these cars
 ignore_can_valid = [
   HYUNDAI.SANTA_FE,
@@ -76,7 +78,7 @@ class TestCarModel(unittest.TestCase):
       all_msgs = sorted(lr, key=lambda msg: msg.logMonoTime)
       t_start = all_msgs[0].logMonoTime
       for msg in all_msgs:
-        if msg.which() == "can" and (msg.logMonoTime - t_start) / 1e9 < 0.1:
+        if msg.which() == "can" and (msg.logMonoTime - t_start) / 1e9 < MIN_FINGERPRINT_TIME:
           for m in msg.can:
             if m.src < 64:
               fingerprint[m.src][m.address] = len(m.dat)
