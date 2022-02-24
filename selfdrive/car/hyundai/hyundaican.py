@@ -72,9 +72,11 @@ def create_clu11(packer, frame, clu11, button):
 def create_cancel_commands(packer, frame):
   commands = []
   tcs13_values = {
-    "ACCEnable": 1,
+    # "ACCEnable": 1,
     "AliveCounterTCS": frame % 7,
-    "ACC_REQ": 0,
+    # "ACC_REQ": 0,
+    "CF_DriBkeStat": 1,
+    "DriverBraking": 1,
   }
   tcs13_dat = packer.make_can_msg("TCS13", 0, tcs13_values)[2]
   tcs13_values["CheckSum_TCS3"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs13_dat) % 0x10
