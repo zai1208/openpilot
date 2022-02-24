@@ -102,6 +102,11 @@ def create_cancel_commands(packer, frame):
   tcs11_values["CheckSum_TCS1"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs11_dat) % 0x10
   commands.append(packer.make_can_msg("TCS11", 0, tcs11_values))
 
+  ems12_values = {
+    "ACC_ACT": 0,
+  }
+  commands.append(packer.make_can_msg("EMS12", 0, ems12_values))
+
   return commands
 
 
