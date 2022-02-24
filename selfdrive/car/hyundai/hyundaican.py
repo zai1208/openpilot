@@ -80,6 +80,11 @@ def create_cancel_commands(packer, frame):
   tcs13_values["CheckSum_TCS3"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs13_dat) % 0x10
   commands.append(packer.make_can_msg("TCS13", 0, tcs13_values))
 
+  cgw1_values = {
+    "CF_Gway_DrvDrSw": 1,
+  }
+  commands.append(packer.make_can_msg("CGW1", 0, cgw1_values))
+
   scc12_values = {
     "ACCMode": 0,
     "StopReq": 0,
