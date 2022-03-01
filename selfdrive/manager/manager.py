@@ -47,8 +47,9 @@ def manager_init() -> None:
   if params.get_bool("RecordFrontLock"):
     params.put_bool("RecordFront", True)
 
-  if not params.get_bool("DisableRadar_Allow"):
-    params.delete("DisableRadar")
+  # if not params.get_bool("DisableRadar_Allow"):
+  #   params.delete("DisableRadar")
+  params.put_bool("DisableRadar_Allow", True)
 
   # set unset params
   for k, v in default_params:
