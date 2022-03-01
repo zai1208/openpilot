@@ -69,18 +69,23 @@ def create_clu11(packer, frame, clu11, button):
   return packer.make_can_msg("CLU11", 0, values)
 
 
-def create_cancel_commands(packer, frame):
+def create_cancel_commands(packer, frame, tcs13_counter):
   commands = []
-  tcs13_values = {
-    # "ACCEnable": 1,
-    "AliveCounterTCS": frame % 7,
-    # "ACC_REQ": 0,
-    "CF_DriBkeStat": 1,
-    "DriverBraking": 1,
-  }
-  tcs13_dat = packer.make_can_msg("TCS13", 0, tcs13_values)[2]
-  tcs13_values["CheckSum_TCS3"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs13_dat) % 0x10
-  commands.append(packer.make_can_msg("TCS13", 0, tcs13_values))
+  # TODO: does starting at the current counter increase our chances?
+  frame = tcs13_counter + 3  # assume some read lag?
+  for _ in range(7):
+    tcs13_values = {
+      "ACCEnable": 1,  # temporary fault
+      "AliveCounterTCS": tcs13_counter % 7,
+      "ACC_REQ": 0,
+      # "CF_DriBkeStat": 1,
+      "DriverBraking": 1,
+    }
+    tcs13_dat = packer.make_can_msg("TCS13", 0, tcs13_values)[2]
+    tcs13_values["CheckSum_TCS3"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs13_dat) % 0x10
+    commands.append(packer.make_can_msg("TCS13", 0, tcs13_values))
+    frame += 1
+  return commands
 
   cgw1_values = {
     "CF_Gway_DrvDrSw": 1,
