@@ -79,8 +79,8 @@ class CarController():
                                    left_lane_warning, right_lane_warning))
 
     if not CS.CP.openpilotLongitudinalControl:
-      if pcm_cancel_cmd:
-        can_sends.append(create_cancel_command(self.packer, CS.cgw1_values))
+      if pcm_cancel_cmd and frame % 10 == 0:
+        can_sends.append(create_cancel_command(self.packer, CS.cgw1))
       elif CS.out.cruiseState.standstill:
         # send resume at a max freq of 10Hz
         if (frame - self.last_resume_frame) * DT_CTRL > 0.1:
