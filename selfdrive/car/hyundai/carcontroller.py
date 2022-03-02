@@ -4,7 +4,7 @@ from common.numpy_fast import clip, interp
 from selfdrive.config import Conversions as CV
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_acc_commands,\
-                                             create_acc_opt, create_frt_radar_opt, create_cancel_commands
+                                             create_acc_opt, create_frt_radar_opt, create_cancel_command
 from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR
 from opendbc.can.packer import CANPacker
 
@@ -80,8 +80,7 @@ class CarController():
 
     if not CS.CP.openpilotLongitudinalControl:
       if pcm_cancel_cmd:
-        can_sends.extend(create_cancel_commands(self.packer, frame, CS.tcs13_counter))
-        # can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL))
+        can_sends.append(create_cancel_command(self.packer))
       elif CS.out.cruiseState.standstill:
         # send resume at a max freq of 10Hz
         if (frame - self.last_resume_frame) * DT_CTRL > 0.1:

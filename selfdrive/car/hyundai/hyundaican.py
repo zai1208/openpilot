@@ -69,63 +69,11 @@ def create_clu11(packer, frame, clu11, button):
   return packer.make_can_msg("CLU11", 0, values)
 
 
-def create_cancel_commands(packer, frame, tcs13_counter):
-  commands = []
-  # TODO: does starting at the current counter increase our chances?
-  frame = tcs13_counter + 3  # assume some read lag?
-  for _ in range(7):
-    tcs13_values = {
-      "ACCEnable": 1,  # temporary fault
-      "AliveCounterTCS": tcs13_counter % 7,
-      "ACC_REQ": 0,
-      # "CF_DriBkeStat": 1,
-      "DriverBraking": 1,
-    }
-    tcs13_dat = packer.make_can_msg("TCS13", 0, tcs13_values)[2]
-    tcs13_values["CheckSum_TCS3"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs13_dat) % 0x10
-    commands.append(packer.make_can_msg("TCS13", 0, tcs13_values))
-    frame += 1
-  return commands
-
+def create_cancel_command(packer):
   cgw1_values = {
     "CF_Gway_DrvDrSw": 1,
   }
-  commands.append(packer.make_can_msg("CGW1", 0, cgw1_values))
-
-  scc12_values = {
-    "ACCMode": 0,
-    "StopReq": 0,
-    "CR_VSM_Alive": frame % 0xF,
-  }
-  scc12_dat = packer.make_can_msg("SCC12", 0, scc12_values)[2]
-  scc12_values["CR_VSM_ChkSum"] = 0x10 - sum(sum(divmod(i, 16)) for i in scc12_dat) % 0x10
-  commands.append(packer.make_can_msg("SCC12", 0, scc12_values))
-
-  scc14_values = {
-    "ACCMode": 4,
-  }
-  commands.append(packer.make_can_msg("SCC14", 0, scc14_values))
-
-  tcs11_values = {
-    "BLA_CTL": 0,
-    "AliveCounter_TCS1": frame % 14,
-  }
-  tcs11_dat = packer.make_can_msg("TCS11", 0, tcs11_values)[2]
-  tcs11_values["CheckSum_TCS1"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs11_dat) % 0x10
-  commands.append(packer.make_can_msg("TCS11", 0, tcs11_values))
-
-  ems12_values = {
-    "ACC_ACT": 0,
-  }
-  commands.append(packer.make_can_msg("EMS12", 0, ems12_values))
-
-  esp11_values = {
-    "AVH_STAT": 0,
-    "ROL_CNT_ESP": frame % 255,
-  }
-  commands.append(packer.make_can_msg("ESP11", 0, esp11_values))
-
-  return commands
+  return packer.make_can_msg("CGW1", 0, cgw1_values)
 
 
 def create_lfahda_mfc(packer, enabled, hda_set_speed=0):
