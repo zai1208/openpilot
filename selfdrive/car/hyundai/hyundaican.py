@@ -69,10 +69,8 @@ def create_clu11(packer, frame, clu11, button):
   return packer.make_can_msg("CLU11", 0, values)
 
 
-def create_cancel_command(packer):
-  cgw1_values = {
-    "CF_Gway_DrvDrSw": 1,
-  }
+def create_cancel_command(packer, cgw1_values):
+  cgw1_values["CF_Gway_DrvDrSw"] = 1
   return packer.make_can_msg("CGW1", 0, cgw1_values)
 
 

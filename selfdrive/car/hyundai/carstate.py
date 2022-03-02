@@ -39,6 +39,8 @@ class CarState(CarStateBase):
 
     ret.standstill = ret.vEgoRaw < 0.1
 
+    self.cgw1_values = cp.vl["CG1"]
+
     ret.steeringAngleDeg = cp.vl["SAS11"]["SAS_Angle"]
     ret.steeringRateDeg = cp.vl["SAS11"]["SAS_Speed"]
     ret.yawRate = cp.vl["ESP12"]["YAW_RATE"]
@@ -138,6 +140,43 @@ class CarState(CarStateBase):
       ("CF_Gway_TurnSigLh", "CGW1"),
       ("CF_Gway_TurnSigRh", "CGW1"),
       ("CF_Gway_ParkBrakeSw", "CGW1"),
+      ("CF_Gway_IGNSw", "CGW1"),
+      ("CF_Gway_RKECmd", "CGW1"),
+      ("CF_Gway_DrvKeyLockSw", "CGW1"),
+      ("CF_Gway_DrvKeyUnlockSw", "CGW1"),
+      ("CF_Gway_TrunkTgSw", "CGW1"),
+      ("CF_Gway_AstSeatBeltSw", "CGW1"),
+      ("CF_Gway_SMKOption", "CGW1"),
+      ("CF_Gway_HoodSw", "CGW1"),
+      ("CF_Gway_WiperIntT", "CGW1"),
+      ("CF_Gway_WiperIntSw", "CGW1"),
+      ("CF_Gway_WiperLowSw", "CGW1"),
+      ("CF_Gway_WiperHighSw", "CGW1"),
+      ("CF_Gway_WiperAutoSw", "CGW1"),
+      ("CF_Gway_RainSnsState", "CGW1"),
+      ("CF_Gway_HeadLampLow", "CGW1"),
+      ("CF_Gway_HeadLampHigh", "CGW1"),
+      ("CF_Gway_HazardSw", "CGW1"),
+      ("CF_Gway_DefoggerRly", "CGW1"),
+      ("CF_Gway_ALightStat", "CGW1"),
+      ("CF_Gway_LightSwState", "CGW1"),
+      ("CF_Gway_Frt_Fog_Act", "CGW1"),
+      ("CF_Gway_TSigRHSw", "CGW1"),
+      ("CF_Gway_TSigLHSw", "CGW1"),
+      ("CF_Gway_DriveTypeOption", "CGW1"),
+      ("CF_Gway_StarterRlyState", "CGW1"),
+      ("CF_Gway_PassiveAccessLock", "CGW1"),
+      ("CF_Gway_WiperMistSw", "CGW1"),
+      ("CF_Gway_PassiveAccessUnlock", "CGW1"),
+      ("CF_Gway_RrSunRoofOpenState", "CGW1"),
+      ("CF_Gway_PassingSW", "CGW1"),
+      ("CF_Gway_HBAControlMode", "CGW1"),
+      ("CF_Gway_HLpHighSw", "CGW1"),
+      ("CF_Gway_InhibitRMT", "CGW1"),
+      ("CF_Gway_RainSnsOption", "CGW1"),
+      ("C_SunRoofOpenState", "CGW1"),
+      ("CF_Gway_Ign1", "CGW1"),
+      ("CF_Gway_Ign2", "CGW1"),
 
       ("CYL_PRES", "ESP12"),
 
