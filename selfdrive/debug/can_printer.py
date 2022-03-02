@@ -35,7 +35,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="simple CAN data viewer",
                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-  parser.add_argument("--bus", type=int, help="CAN bus to print out", default=192)  # blocked bus 0
+  parser.add_argument("--bus", type=int, help="CAN bus to print out", default=0)
   parser.add_argument("--max_msg", type=int, help="max addr")
   parser.add_argument("--ascii", action='store_true', help="decode as ascii")
   parser.add_argument("--addr", default="127.0.0.1")
