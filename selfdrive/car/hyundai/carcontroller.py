@@ -86,7 +86,7 @@ class CarController():
       if pcm_cancel_cmd and frame % 10 == 0:
         # cancel by causing a temporary fault in the SCC module, causes a chime
         # TODO: find a way to make this silent
-        can_sends.extend([create_cancel_command(self.packer)] * 8)
+        can_sends.extend([create_cancel_command(self.packer)] * 15)
         self.cancel_frames += 1
       elif CS.out.cruiseState.standstill:
         # send resume at a max freq of 10Hz

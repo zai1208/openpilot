@@ -70,7 +70,11 @@ def create_clu11(packer, frame, clu11, button):
 
 
 def create_cancel_command(packer):
-  return packer.make_can_msg("TCS13", 0, {})
+  tcs13_values = {
+    "ACC_EQUIP": 1,
+    "PBRAKE_ACT": 1,
+  }
+  return packer.make_can_msg("TCS13", 0, tcs13_values)
 
 
 def create_lfahda_mfc(packer, enabled, hda_set_speed=0):
