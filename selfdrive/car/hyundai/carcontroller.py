@@ -80,7 +80,7 @@ class CarController():
 
     if not CS.CP.openpilotLongitudinalControl:
       if pcm_cancel_cmd and frame % 10 == 0:
-        # cancel by causing a fault in the SCC module, causes a chime
+        # cancel by causing a temporary fault in the SCC module, causes a chime
         # TODO: find a way to make this silent
         can_sends.extend([create_cancel_command(self.packer)] * 8)
       elif CS.out.cruiseState.standstill:
