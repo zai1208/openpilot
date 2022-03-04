@@ -111,6 +111,7 @@ class CarState(CarStateBase):
     self.ems12 = copy.copy(cp.vl["EMS12"])
     self.tcs15 = copy.copy(cp.vl["TCS15"])
     self.tcs11 = copy.copy(cp.vl["TCS11"])
+    self.tcs13 = copy.copy(cp.vl["TCS13"])
     self.park_brake = cp.vl["TCS13"]["PBRAKE_ACT"] == 1
     self.steer_state = cp.vl["MDPS12"]["CF_Mdps_ToiActive"]  # 0 NOT ACTIVE, 1 ACTIVE
     self.brake_error = cp.vl["TCS13"]["ACCEnable"] != 0  # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED

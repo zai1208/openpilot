@@ -70,7 +70,7 @@ def create_clu11(packer, frame, clu11, button):
   return packer.make_can_msg("CLU11", 0, values)
 
 
-def create_cancel_command(packer, ems12, tcs15, tcs11):
+def create_cancel_command(packer, ems12, tcs15, tcs11, tcs13):
   commands = []
 
   # msg = packer.make_can_msg("EMS12", 0, {})
@@ -95,6 +95,7 @@ def create_cancel_command(packer, ems12, tcs15, tcs11):
   return commands
   """
 
+  """
   # TCS11
   for _ in range(1):
     tcs11["TCS_PAS"] = 1
@@ -106,6 +107,23 @@ def create_cancel_command(packer, ems12, tcs15, tcs11):
     tcs11["CheckSum_TCS1"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs11_dat) % 0x10
     for _ in range(1):
       commands.append(packer.make_can_msg("TCS11", 0, tcs11))
+  """
+
+  tcs13["AliveCounterTCS"] += 3
+  for _ in range(8):  # batch
+    tcs13["BrakeLight"] = 0  # 1 when car is braking
+    tcs13["DCEnable"] = 0  # not sure, never 1 when not engaged
+    tcs13["DriverOverride"] = 2  # 1 is gas pressed, 2 is brake pressed
+    tcs13["DriverBraking"] = 1
+    tcs13["ACC_REQ"] = 0  # set to 0 when user presses brake
+
+    tcs13["CheckSum_TCS3"] = 0
+    tcs13["AliveCounterTCS"] = (tcs13["AliveCounterTCS"] + 1) % 14
+
+    tcs13_dat = packer.make_can_msg("TCS13", 0, tcs13)[2]
+    tcs13["CheckSum_TCS3"] = 0x10 - sum(sum(divmod(i, 16)) for i in tcs13_dat) % 0x10
+    for _ in range(1):  # if we want to spam a single message
+      commands.append(packer.make_can_msg("TCS13", 0, tcs13))
 
   return commands
 
