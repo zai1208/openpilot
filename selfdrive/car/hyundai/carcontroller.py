@@ -87,7 +87,7 @@ class CarController():
         # cancel by causing a temporary fault in the SCC module, causes a chime
         # TODO: find a way to make this silent
         print('Sending cancel')
-        can_sends.extend(create_cancel_command(self.packer, CS.ems12, CS.tcs15))
+        can_sends.extend(create_cancel_command(self.packer, CS.ems12, CS.tcs15, CS.tcs11))
         self.cancel_frames += 1
       elif CS.out.cruiseState.standstill:
         # send resume at a max freq of 10Hz

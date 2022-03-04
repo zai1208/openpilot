@@ -110,6 +110,7 @@ class CarState(CarStateBase):
     self.clu11 = copy.copy(cp.vl["CLU11"])
     self.ems12 = copy.copy(cp.vl["EMS12"])
     self.tcs15 = copy.copy(cp.vl["TCS15"])
+    self.tcs11 = copy.copy(cp.vl["TCS11"])
     self.park_brake = cp.vl["TCS13"]["PBRAKE_ACT"] == 1
     self.steer_state = cp.vl["MDPS12"]["CF_Mdps_ToiActive"]  # 0 NOT ACTIVE, 1 ACTIVE
     self.brake_error = cp.vl["TCS13"]["ACCEnable"] != 0  # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
@@ -172,6 +173,36 @@ class CarState(CarStateBase):
       ("EBD_W_LAMP", "TCS15"),
       ("AVH_ALARM", "TCS15"),
       ("AVH_LAMP", "TCS15"),
+
+      ("TCS_REQ", "TCS11"),
+      ("MSR_C_REQ", "TCS11"),
+      ("TCS_PAS", "TCS11"),
+      ("TCS_GSC", "TCS11"),
+      ("CF_Esc_LimoInfo", "TCS11"),
+      ("ABS_DIAG", "TCS11"),
+      ("ABS_DEF", "TCS11"),
+      ("TCS_DEF", "TCS11"),
+      ("TCS_CTL", "TCS11"),
+      ("ABS_ACT", "TCS11"),
+      ("EBD_DEF", "TCS11"),
+      ("ESP_PAS", "TCS11"),
+      ("ESP_DEF", "TCS11"),
+      ("ESP_CTL", "TCS11"),
+      ("TCS_MFRN", "TCS11"),
+      ("DBC_CTL", "TCS11"),
+      ("DBC_PAS", "TCS11"),
+      ("DBC_DEF", "TCS11"),
+      ("HAC_CTL", "TCS11"),
+      ("HAC_PAS", "TCS11"),
+      ("HAC_DEF", "TCS11"),
+      ("ESS_STAT", "TCS11"),
+      ("TQI_TCS", "TCS11"),
+      ("TQI_MSR", "TCS11"),
+      ("TQI_SLW_TCS", "TCS11"),
+      ("CF_Esc_BrkCtl", "TCS11"),
+      ("BLA_CTL", "TCS11"),
+      ("AliveCounter_TCS1", "TCS11"),
+      ("CheckSum_TCS1", "TCS11"),
 
       ("CR_Mdps_StrColTq", "MDPS12"),
       ("CF_Mdps_ToiActive", "MDPS12"),
