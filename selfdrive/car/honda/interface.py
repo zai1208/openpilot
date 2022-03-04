@@ -8,7 +8,7 @@ from selfdrive.car import STD_CARGO_KG, CivicParams, scale_rot_inertia, scale_ti
 from selfdrive.car.interfaces import CarInterfaceBase
 from selfdrive.car.disable_ecu import disable_ecu
 from selfdrive.config import Conversions as CV
-
+from selfdrive.controls.lib.drive_helpers import V_CRUISE_NA
 
 ButtonType = car.CarState.ButtonEvent.Type
 EventName = car.CarEvent.EventName
@@ -425,7 +425,7 @@ class CarInterface(CarInterfaceBase):
     if hud_control.speedVisible:
       hud_v_cruise = hud_control.setSpeed * CV.MS_TO_KPH
     else:
-      hud_v_cruise = 255
+      hud_v_cruise = V_CRUISE_NA
 
     ret = self.CC.update(c.enabled, c.active, self.CS, self.frame,
                          c.actuators,

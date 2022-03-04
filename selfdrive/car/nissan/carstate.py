@@ -6,6 +6,7 @@ from selfdrive.car.interfaces import CarStateBase
 from selfdrive.config import Conversions as CV
 from opendbc.can.parser import CANParser
 from selfdrive.car.nissan.values import CAR, DBC, CarControllerParams
+from selfdrive.controls.lib.drive_helpers import V_CRUISE_NA
 
 TORQUE_SAMPLES = 12
 
@@ -69,7 +70,7 @@ class CarState(CarStateBase):
     else:
       speed = cp_adas.vl["PROPILOT_HUD"]["SET_SPEED"]
 
-    if speed != 255:
+    if speed != V_CRUISE_NA:
       if self.CP.carFingerprint in (CAR.LEAF, CAR.LEAF_IC):
         conversion = CV.MPH_TO_MS if cp.vl["HUD_SETTINGS"]["SPEED_MPH"] else CV.KPH_TO_MS
       else:
