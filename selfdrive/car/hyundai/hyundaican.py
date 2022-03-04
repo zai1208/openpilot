@@ -69,10 +69,40 @@ def create_clu11(packer, frame, clu11, button):
   return packer.make_can_msg("CLU11", 0, values)
 
 
-def create_cancel_command(packer):
-  msg = packer.make_can_msg("EMS12", 0, {})
-  msg[2] = b'\xff\xff\xff\xff\xff\xff\xff\xff'
-  return [msg]
+def create_cancel_command(packer, ems12, tcs15):
+  commands = []
+
+  # msg = packer.make_can_msg("EMS12", 0, {})
+  # msg[2] = b'\xff\xff\xff\xff\xff\xff\xff\xff'
+  # return [msg]
+
+  # try this if below doesn't work
+  # msg = packer.make_can_msg("TCS15", 0, {})
+  # msg[2] = b'\xff\xff\xff\xff'
+  # return [msg]
+
+  # TCS15
+  tcs15["ESC_Off_Step"] = 1  # max 3
+  # tcs15["TCS_LAMP"] = 1  # max 3
+  # tcs15["AVH_I_LAMP"] = 0  # usually 1, max 1
+
+  for _ in range(1):
+    commands.append(packer.make_can_msg("TCS15", 0, tcs15))
+
+  return commands
+
+  # # EMS12
+  # # this message has two duplicate message counters, so don't increment?
+  # # ems12["COUNTER"] += 1  !  # either 0, 2, 4, 7
+  # ems12["BRAKE_ACT"] = 2  # max 3, 0 is no brake
+  # ems12["ACC_ACT"] = 0  # max 3
+  #
+  # for _ in range(1):
+  #   commands.append(packer.make_can_msg("EMS12", 0, ems12))
+  #
+  # return commands
+
+  # TODO: sometimes unreliable on newer models
   # tcs13_values = {
   #   "ACC_EQUIP": 1,
   #   "PBRAKE_ACT": 1,

@@ -109,6 +109,7 @@ class CarState(CarStateBase):
     self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
     self.clu11 = copy.copy(cp.vl["CLU11"])
     self.ems12 = copy.copy(cp.vl["EMS12"])
+    self.tcs15 = copy.copy(cp.vl["TCS15"])
     self.park_brake = cp.vl["TCS13"]["PBRAKE_ACT"] == 1
     self.steer_state = cp.vl["MDPS12"]["CF_Mdps_ToiActive"]  # 0 NOT ACTIVE, 1 ACTIVE
     self.brake_error = cp.vl["TCS13"]["ACCEnable"] != 0  # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
@@ -160,7 +161,16 @@ class CarState(CarStateBase):
       ("StandStill", "TCS13"),
       ("PBRAKE_ACT", "TCS13"),
 
+      ("ABS_W_LAMP", "TCS15"),
+      ("TCS_OFF_LAMP", "TCS15"),
+      ("TCS_LAMP", "TCS15"),
+      ("DBC_W_LAMP", "TCS15"),
+      ("DBC_F_LAMP", "TCS15"),
       ("ESC_Off_Step", "TCS15"),
+      ("AVH_CLU", "TCS15"),
+      ("AVH_I_LAMP", "TCS15"),
+      ("EBD_W_LAMP", "TCS15"),
+      ("AVH_ALARM", "TCS15"),
       ("AVH_LAMP", "TCS15"),
 
       ("CR_Mdps_StrColTq", "MDPS12"),
@@ -244,6 +254,7 @@ class CarState(CarStateBase):
         ("TPS", "EMS12"),
         ("PV_AV_CAN", "EMS12"),
         ("ENG_VOL", "EMS12"),
+        ("COUNTER", "EMS12"),
       ]
       checks += [
         ("EMS12", 100),
