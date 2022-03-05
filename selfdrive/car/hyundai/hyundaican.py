@@ -109,13 +109,13 @@ def create_cancel_command(packer, ems12, tcs15, tcs11, tcs13):
       commands.append(packer.make_can_msg("TCS11", 0, tcs11))
   """
 
-  tcs13["AliveCounterTCS"] += 3
+  # tcs13["AliveCounterTCS"] += 3
   for _ in range(8):  # batch
-    tcs13["BrakeLight"] = 0  # 1 when car is braking
-    tcs13["DCEnable"] = 0  # not sure, never 1 when not engaged
+    # tcs13["BrakeLight"] = 0  # 1 when car is braking
+    # tcs13["DCEnable"] = 0  # not sure, never 1 when not engaged
     tcs13["DriverOverride"] = 2  # 1 is gas pressed, 2 is brake pressed
-    tcs13["DriverBraking"] = 1
-    tcs13["ACC_REQ"] = 0  # set to 0 when user presses brake
+    # tcs13["DriverBraking"] = 1
+    # tcs13["ACC_REQ"] = 0  # set to 0 when user presses brake
 
     tcs13["CheckSum_TCS3"] = 0
     tcs13["AliveCounterTCS"] = (tcs13["AliveCounterTCS"] + 1) % 14
