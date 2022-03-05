@@ -83,9 +83,7 @@ class CarController():
     if not CS.CP.openpilotLongitudinalControl:
       if pcm_cancel_cmd and not self.prev_pcm_cancel:
         self.cancel_frames = 0
-      if pcm_cancel_cmd and frame % 2 == 0:
-        # cancel by causing a temporary fault in the SCC module, causes a chime
-        # TODO: find a way to make this silent
+      if pcm_cancel_cmd and frame % 5 == 0:
         print('Sending cancel')
         can_sends.extend(create_cancel_command(self.packer, CS.ems12, CS.tcs15, CS.tcs11, CS.tcs13))
         self.cancel_frames += 1
