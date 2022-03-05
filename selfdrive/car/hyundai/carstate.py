@@ -219,6 +219,7 @@ class CarState(CarStateBase):
       # address, frequency
       ("MDPS12", 50),
       ("TCS13", 50),
+      ("TCS11", 50),
       ("TCS15", 10),
       ("CLU11", 50),
       ("ESP12", 100),
