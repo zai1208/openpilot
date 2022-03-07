@@ -126,6 +126,7 @@ struct FrameData {
   # Timestamps
   timestampEof @2 :UInt64;
   timestampSof @8 :UInt64;
+  processingTime @23 :Float32;
 
   # Exposure
   integLines @4 :Int32;
@@ -427,6 +428,7 @@ struct PandaState @0xa7649e2575e4591e {
     interruptRateKlineInit @19;
     interruptRateClockSource @20;
     interruptRateTick @21;
+    interruptRateExti @22;
     # Update max fault type in boardd when adding faults
   }
 
@@ -688,6 +690,7 @@ struct ControlsState @0x97ff69c53601abf1 {
 
 struct ModelDataV2 {
   frameId @0 :UInt32;
+  frameIdExtra @20 :UInt32;
   frameAge @1 :UInt32;
   frameDropPerc @2 :Float32;
   timestampEof @3 :UInt64;
@@ -968,7 +971,6 @@ struct LiveLocationKalman {
   gpsTimeOfWeek @14 :Float64;
   status @15 :Status;
   unixTimestampMillis @16 :Int64;
-  inputsOK @17 :Bool = true;
   posenetOK @18 :Bool = true;
   gpsOK @19 :Bool = true;
   sensorsOK @21 :Bool = true;
@@ -987,6 +989,9 @@ struct LiveLocationKalman {
     std @1 : List(Float64);
     valid @2 : Bool;
   }
+
+  # deprecated
+  inputsOKDEPRECATED @17 :Bool = true;
 }
 
 struct ProcLog {
